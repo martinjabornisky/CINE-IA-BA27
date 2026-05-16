@@ -1,0 +1,1126 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Festival de Cine IA · Buenos Aires 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0a;
+    --bg-2:#111111;
+    --ink:#f4f1ea;
+    --ink-dim:#9c9890;
+    --line:#1f1f1f;
+    --green:#9FFF6B;
+    --green-dim:#6fcf45;
+    --navy:#15324b;
+    --hot:#ff4d2e;
+    --maxw:1480px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);font-family:"Space Grotesk",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.95 0 0 0 0 0.9 0 0 0 0.07 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    opacity:.6;mix-blend-mode:overlay;
+  }
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:201;
+    background:repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0 1px,transparent 1px 3px);
+  }
+
+  /* ===== MOTION TWEAKS ===== */
+  /* Ken Burns – slow continuous drift on imagery (independent toggle) */
+  @keyframes kenburns-hero{
+    0%{transform:scale(1) translate(0,0)}
+    100%{transform:scale(1.08) translate(-1%,-1.5%)}
+  }
+  @keyframes kenburns-img{
+    0%{transform:scale(1) translate(0,0)}
+    50%{transform:scale(1.06) translate(-1.2%,-.8%)}
+    100%{transform:scale(1) translate(0,0)}
+  }
+  body[data-kenburns="on"] .hero-img{
+    animation:kenburns-hero 22s ease-in-out infinite alternate;
+    will-change:transform;
+  }
+  body[data-kenburns="on"] .obj-image img,
+  body[data-kenburns="on"] .dia-img img{
+    animation:kenburns-img 28s ease-in-out infinite;
+    will-change:transform;
+  }
+
+  /* Glitch mode – jitter + RGB chromatic split on hero & framed images */
+  @keyframes glitch-shake{
+    0%,100%{transform:translate(0,0)}
+    10%{transform:translate(-2px,1px)}
+    20%{transform:translate(2px,-1px)}
+    30%{transform:translate(-1px,2px)}
+    40%{transform:translate(0,0)}
+    55%{transform:translate(3px,0)}
+    62%{transform:translate(-3px,0)}
+    70%{transform:translate(0,0)}
+    85%{transform:translate(1px,-2px)}
+  }
+  @keyframes glitch-rgb{
+    0%,100%{filter:none}
+    20%{filter:drop-shadow(2px 0 0 #ff003c) drop-shadow(-2px 0 0 #00f7ff)}
+    23%{filter:none}
+    55%{filter:drop-shadow(-3px 0 0 #ff003c) drop-shadow(3px 0 0 #00f7ff) contrast(1.15) saturate(1.2)}
+    58%{filter:none}
+    80%{filter:drop-shadow(1px 0 0 #ff003c) drop-shadow(-1px 0 0 #00f7ff)}
+    82%{filter:none}
+  }
+  @keyframes glitch-skip{
+    0%,100%{clip-path:inset(0 0 0 0)}
+    24%{clip-path:inset(8% 0 60% 0);transform:translateX(6px)}
+    25%{clip-path:inset(0 0 0 0);transform:translateX(0)}
+    66%{clip-path:inset(70% 0 12% 0);transform:translateX(-8px)}
+    67%{clip-path:inset(0 0 0 0);transform:translateX(0)}
+  }
+  body[data-motion="glitch"] .hero-img{
+    animation:glitch-shake 1.6s steps(8,end) infinite, glitch-rgb 3.4s ease-in-out infinite;
+  }
+  body[data-motion="glitch"] .obj-image img,
+  body[data-motion="glitch"] .dia-img img{
+    animation:glitch-rgb 4.2s ease-in-out infinite, glitch-skip 5s steps(20,end) infinite;
+  }
+  body[data-motion="glitch"]::after{
+    animation:glitch-rgb 2.2s linear infinite;
+    opacity:.5;
+  }
+  body[data-motion="glitch"] .marquee-track{animation-duration:8s !important}
+
+  /* Drift mode – slower, smoother global feel; soften the noise grain */
+  body[data-motion="drift"] .marquee-track{animation-duration:60s !important}
+  body[data-motion="drift"]::before{opacity:.4}
+
+  /* Still mode – everything that loops is paused */
+  body[data-motion="still"] .marquee-track{animation-play-state:paused}
+  body[data-motion="still"] .hero-img,
+  body[data-motion="still"] .obj-image img,
+  body[data-motion="still"] .dia-img img{animation:none !important}
+  body[data-motion="still"] .rec::before,
+  body[data-motion="still"] nav.top .dot{animation:none !important;opacity:.6}
+
+  .mono{font-family:"JetBrains Mono",monospace;letter-spacing:.02em}
+  .display{font-family:"Anton",sans-serif;font-weight:400;letter-spacing:-.005em;line-height:.85;text-transform:uppercase}
+  .uplabel{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-dim)}
+  .green{color:var(--green)}
+  .underline-green{color:var(--green)}
+
+  /* ===== NAV ===== */
+  nav.top{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 28px;
+    background:linear-gradient(180deg,rgba(10,10,10,.92),rgba(10,10,10,0));
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+  }
+  nav.top .left{display:flex;align-items:center;gap:18px}
+  nav.top .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green);animation:pulse 1.6s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  nav.top .links{display:flex;gap:22px}
+  nav.top a{color:var(--ink);text-decoration:none;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;opacity:.75;transition:.2s}
+  nav.top a:hover{opacity:1;color:var(--green)}
+  nav.top .cta{
+    border:1px solid var(--ink);padding:9px 16px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;
+    background:var(--ink);color:var(--bg);text-transform:uppercase;cursor:pointer;
+  }
+  nav.top .cta:hover{background:var(--green);border-color:var(--green);color:#000}
+
+  /* ===== HERO ===== */
+  .hero{
+    position:relative;min-height:100vh;width:100%;overflow:hidden;
+    display:flex;flex-direction:column;justify-content:flex-end;
+    padding:120px 28px 40px;
+  }
+  .hero-img{
+    position:absolute;inset:0;z-index:0;
+    background:url("../assets/hero-head.png") center 30% / cover no-repeat;
+  }
+  .hero-img::before{
+    content:"";position:absolute;inset:0;
+    background:
+      linear-gradient(180deg,rgba(10,10,10,.55) 0%,rgba(10,10,10,.15) 35%,rgba(10,10,10,.15) 55%,rgba(10,10,10,.95) 100%),
+      linear-gradient(90deg,rgba(10,10,10,.55) 0%,rgba(10,10,10,0) 40%,rgba(10,10,10,0) 60%,rgba(10,10,10,.55) 100%);
+  }
+  .hero-frame-marks{
+    position:absolute;inset:24px;border:1px solid rgba(244,241,234,.25);z-index:2;pointer-events:none;
+  }
+  .hero-frame-marks::before,.hero-frame-marks::after{
+    content:"";position:absolute;width:14px;height:14px;border:1px solid var(--green);
+  }
+  .hero-frame-marks::before{top:-1px;left:-1px;border-right:none;border-bottom:none}
+  .hero-frame-marks::after{bottom:-1px;right:-1px;border-left:none;border-top:none}
+  .corner{position:absolute;width:14px;height:14px;border:1px solid var(--green);z-index:2;pointer-events:none}
+  .corner.tr{top:23px;right:27px;border-left:none;border-bottom:none}
+  .corner.bl{bottom:39px;left:27px;border-right:none;border-top:none}
+
+  .hero-top{
+    position:absolute;top:80px;left:28px;right:28px;z-index:3;
+    display:flex;justify-content:space-between;align-items:flex-start;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);
+  }
+  .hero-top .col{display:flex;flex-direction:column;gap:6px}
+  .hero-top .col.r{text-align:right}
+  .hero-top span.muted{color:var(--ink-dim)}
+
+  .hero-content{position:relative;z-index:4;max-width:var(--maxw);margin:0 auto;width:100%}
+  .hero-presents{
+    display:flex;align-items:center;gap:14px;margin-bottom:22px;
+    font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;
+  }
+  .hero-presents .line{height:1px;width:60px;background:var(--green)}
+  .hero-title{
+    font-family:"Anton",sans-serif;text-transform:uppercase;line-height:.84;letter-spacing:-.01em;
+    font-size:clamp(72px,13vw,212px);
+  }
+  .hero-title .row{display:flex;align-items:baseline;gap:.16em;flex-wrap:wrap}
+  .hero-title .ia{
+    color:var(--bg);background:var(--green);padding:0 .12em;display:inline-block;
+    transform:translateY(-.06em);
+  }
+  .hero-title .out{-webkit-text-stroke:1.5px var(--ink);color:transparent}
+  .hero-meta{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:44px;
+    padding-top:24px;border-top:1px solid rgba(244,241,234,.18);
+  }
+  .hero-meta .m{display:flex;flex-direction:column;gap:6px}
+  .hero-meta .m .k{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;color:var(--ink-dim);text-transform:uppercase}
+  .hero-meta .m .v{font-family:"Anton",sans-serif;font-size:34px;line-height:1;letter-spacing:-.01em;text-transform:uppercase}
+  .hero-meta .m .v.small{font-size:22px}
+
+  .hero-bottom-bar{
+    position:absolute;left:28px;right:28px;bottom:14px;z-index:5;
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-dim);
+  }
+  .rec{display:inline-flex;align-items:center;gap:8px;color:var(--green)}
+  .rec::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.2s infinite}
+
+  /* ===== MARQUEE ===== */
+  .marquee{
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    background:#000;overflow:hidden;white-space:nowrap;
+    padding:18px 0;
+  }
+  .marquee-track{display:inline-block;animation:scroll 35s linear infinite;font-family:"Anton",sans-serif;font-size:42px;text-transform:uppercase;letter-spacing:.01em;line-height:1}
+  .marquee-track span{margin-right:48px}
+  .marquee-track span.alt{color:var(--green)}
+  .marquee-track .star{display:inline-block;margin-right:48px;color:var(--ink-dim);font-family:"JetBrains Mono",monospace;font-size:24px;transform:translateY(-6px)}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* ===== SECTION SCAFFOLD ===== */
+  section.block{
+    position:relative;padding:96px 28px;
+    border-bottom:1px solid var(--line);
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;width:100%}
+  .section-head{
+    display:flex;align-items:flex-end;justify-content:space-between;gap:40px;margin-bottom:56px;
+    border-top:1px solid var(--line);padding-top:18px;
+  }
+  .section-head .id{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;color:var(--ink-dim);text-transform:uppercase}
+  .section-head h2{font-family:"Anton",sans-serif;text-transform:uppercase;font-size:clamp(56px,8vw,128px);line-height:.85;letter-spacing:-.01em;max-width:14ch}
+  .section-head h2 em{font-style:normal;color:var(--green)}
+  .section-head h2 .stroke{-webkit-text-stroke:1.5px var(--ink);color:transparent}
+
+  /* ===== QUE ES ===== */
+  .que-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:start}
+  .que-lede{font-size:24px;line-height:1.35;letter-spacing:-.01em;font-weight:500;color:var(--ink)}
+  .que-lede .hl{background:linear-gradient(transparent 64%, var(--green) 64%, var(--green) 92%, transparent 92%);color:var(--bg);padding:0 4px}
+  .que-side{display:flex;flex-direction:column;gap:20px;border-left:1px solid var(--line);padding-left:32px}
+  .que-side .row{display:flex;gap:16px;align-items:baseline}
+  .que-side .k{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;color:var(--ink-dim);text-transform:uppercase;width:120px;flex-shrink:0}
+  .que-side .v{font-family:"Space Grotesk",sans-serif;font-size:16px;color:var(--ink);line-height:1.4}
+
+  /* ===== FUTURO CARDS ===== */
+  .futuro-q{font-family:"Anton",sans-serif;text-transform:uppercase;font-size:clamp(36px,4.8vw,72px);line-height:.95;margin:80px 0 32px;max-width:18ch}
+  .futuro-q .stroke{-webkit-text-stroke:1.5px var(--ink);color:transparent}
+  .futuro{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+  .futuro .card{
+    padding:32px 28px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+    display:flex;flex-direction:column;gap:18px;min-height:340px;position:relative;
+    transition:.3s;
+  }
+  .futuro .card:hover{background:#0e0e0e}
+  .futuro .card .num{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;color:var(--green)}
+  .futuro .card .t{font-family:"Anton",sans-serif;font-size:38px;line-height:1;text-transform:uppercase;letter-spacing:-.005em}
+  .futuro .card .d{font-size:15px;line-height:1.5;color:var(--ink-dim);margin-top:auto}
+  .futuro .card .tools{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .futuro .card .tools span{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--line);padding:5px 9px;color:var(--ink)}
+
+  /* ===== OBJETIVOS ===== */
+  .obj-wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:64px}
+  .obj-image{
+    position:relative;align-self:start;
+    border:1px solid var(--line);overflow:hidden;
+    aspect-ratio:3/4;background:#000;
+  }
+  .obj-image img{width:100%;height:100%;object-fit:cover;display:block;filter:contrast(1.05)}
+  .obj-image::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(10,10,10,0) 50%,rgba(10,10,10,.85) 100%);
+  }
+  .obj-image .cap{
+    position:absolute;left:18px;right:18px;bottom:18px;z-index:2;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink);
+    display:flex;justify-content:space-between;
+  }
+  .obj-image .scale{position:absolute;top:18px;left:18px;font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--green);letter-spacing:.2em}
+
+  .obj-list{display:flex;flex-direction:column}
+  .obj-list .item{
+    display:grid;grid-template-columns:120px 1fr;gap:24px;padding:28px 0;border-top:1px solid var(--line);
+  }
+  .obj-list .item:last-child{border-bottom:1px solid var(--line)}
+  .obj-list .item .n{font-family:"Anton",sans-serif;font-size:88px;line-height:.85;letter-spacing:-.02em;color:var(--green)}
+  .obj-list .item .txt{font-size:21px;line-height:1.35;letter-spacing:-.005em;align-self:center}
+  .obj-list .item:hover .n{color:var(--ink)}
+
+  /* ===== VENTANA SUR ===== */
+  .ventana{
+    margin-top:96px;padding:64px;background:#0d0d0d;
+    border:1px solid var(--line);
+    display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;
+    position:relative;overflow:hidden;
+  }
+  .ventana::before{
+    content:"";position:absolute;top:-2px;left:-2px;width:30px;height:30px;border:2px solid var(--green);border-right:none;border-bottom:none;
+  }
+  .ventana::after{
+    content:"";position:absolute;bottom:-2px;right:-2px;width:30px;height:30px;border:2px solid var(--green);border-left:none;border-top:none;
+  }
+  .ventana .l .tag{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;color:var(--green);text-transform:uppercase;margin-bottom:14px}
+  .ventana .l h3{font-family:"Anton",sans-serif;font-size:72px;line-height:.9;text-transform:uppercase;letter-spacing:-.01em}
+  .ventana .r p{font-size:18px;line-height:1.5;color:var(--ink)}
+  .ventana .r .stats{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px;padding-top:24px;border-top:1px solid var(--line)}
+  .ventana .r .stats .stat .v{font-family:"Anton",sans-serif;font-size:48px;line-height:.9;color:var(--green)}
+  .ventana .r .stats .stat .k{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;color:var(--ink-dim);text-transform:uppercase;margin-top:4px}
+
+  /* ===== BENCHMARKS ===== */
+  .bench-head{margin-top:120px;margin-bottom:32px;display:flex;justify-content:space-between;align-items:end}
+  .bench-head .t{font-family:"Anton",sans-serif;font-size:48px;text-transform:uppercase;line-height:1;letter-spacing:-.005em}
+  .bench-head .s{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;color:var(--ink-dim);text-transform:uppercase;max-width:32ch;text-align:right}
+  .bench{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line)}
+  .bench .b{background:var(--bg);padding:32px 28px;display:flex;flex-direction:column;gap:18px;min-height:280px;position:relative;transition:.3s}
+  .bench .b:hover{background:#0d0d0d}
+  .bench .b .yr{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;color:var(--ink-dim);text-transform:uppercase}
+  .bench .b .name{font-family:"Anton",sans-serif;font-size:42px;text-transform:uppercase;line-height:.9}
+  .bench .b .name em{font-style:normal;color:var(--green)}
+  .bench .b .d{font-size:14px;line-height:1.45;color:var(--ink-dim);margin-top:auto}
+  .bench .b .loc{position:absolute;top:32px;right:28px;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;color:var(--green);text-transform:uppercase}
+
+  /* ===== PROGRAMA / TOOLS ===== */
+  .programa{display:grid;grid-template-columns:1fr 1.2fr;gap:64px;align-items:start}
+  .programa .l{position:sticky;top:120px}
+  .programa .l p{font-size:18px;line-height:1.5;color:var(--ink-dim);max-width:38ch;margin-top:18px}
+  .tools-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+  .tools-grid .tool{
+    padding:28px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+    display:flex;flex-direction:column;gap:10px;position:relative;min-height:170px;
+    transition:.25s;
+  }
+  .tools-grid .tool:hover{background:#0d0d0d}
+  .tools-grid .tool .idx{position:absolute;top:14px;right:18px;font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--ink-dim);letter-spacing:.18em}
+  .tools-grid .tool .n{font-family:"Anton",sans-serif;font-size:38px;text-transform:uppercase;line-height:.95}
+  .tools-grid .tool .d{font-size:14px;line-height:1.4;color:var(--ink-dim)}
+  .tools-grid .tool .bar{height:2px;width:32px;background:var(--green)}
+
+  /* ===== PLATAFORMA ===== */
+  .plat{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line)}
+  .plat .p{
+    border-right:1px solid var(--line);padding:32px 24px;display:flex;flex-direction:column;gap:14px;min-height:280px;position:relative;
+  }
+  .plat .p:last-child{border-right:none}
+  .plat .p .pn{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;color:var(--green)}
+  .plat .p .pt{font-family:"Anton",sans-serif;font-size:32px;text-transform:uppercase;line-height:.95}
+  .plat .p .pd{font-size:14px;line-height:1.45;color:var(--ink-dim);margin-top:auto}
+
+  /* ===== EL DIA ===== */
+  .dia{display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:start}
+  .dia-img{
+    position:relative;border:1px solid var(--line);overflow:hidden;aspect-ratio:4/5;
+  }
+  .dia-img img{width:100%;height:100%;object-fit:cover;display:block;filter:contrast(1.08) saturate(.9)}
+  .dia-img::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(10,10,10,.2) 0%,rgba(10,10,10,0) 30%,rgba(10,10,10,0) 70%,rgba(10,10,10,.7) 100%);
+  }
+  .dia-img .stamp{position:absolute;top:18px;left:18px;display:flex;flex-direction:column;gap:4px;font-family:"JetBrains Mono",monospace;font-size:11px;color:#000;background:var(--green);padding:6px 10px;letter-spacing:.16em;text-transform:uppercase}
+  .dia-img .timecode{position:absolute;bottom:18px;left:18px;right:18px;display:flex;justify-content:space-between;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;color:var(--ink);text-transform:uppercase}
+  .dia-list{display:flex;flex-direction:column;gap:0}
+  .dia-list .it{padding:28px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:80px 1fr;gap:24px}
+  .dia-list .it:first-child{border-top:1px solid var(--line)}
+  .dia-list .it .n{font-family:"Anton",sans-serif;font-size:56px;line-height:.85;color:var(--ink)}
+  .dia-list .it:hover .n{color:var(--green)}
+  .dia-list .it h4{font-family:"Anton",sans-serif;font-size:32px;text-transform:uppercase;line-height:.95;margin-bottom:8px;letter-spacing:-.005em}
+  .dia-list .it p{font-size:15px;line-height:1.45;color:var(--ink-dim)}
+  .dia-lede{margin-bottom:48px;font-size:20px;line-height:1.4;max-width:60ch;color:var(--ink)}
+
+  /* ===== AUDIENCIA ===== */
+  .aud-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+  .aud-grid .a{background:var(--bg);padding:28px 22px;display:flex;flex-direction:column;gap:12px;min-height:220px;transition:.25s}
+  .aud-grid .a:hover{background:var(--green);color:#000}
+  .aud-grid .a:hover .ak,.aud-grid .a:hover .ad{color:#000}
+  .aud-grid .a .ak{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;color:var(--green)}
+  .aud-grid .a .at{font-family:"Anton",sans-serif;font-size:28px;text-transform:uppercase;line-height:.95;letter-spacing:-.005em}
+  .aud-grid .a .ad{font-size:13px;line-height:1.4;color:var(--ink-dim);margin-top:auto}
+
+  /* ===== CTA FINAL ===== */
+  .cta-final{
+    position:relative;padding:140px 28px 100px;border-bottom:1px solid var(--line);
+    background:radial-gradient(ellipse at center top,rgba(159,255,107,.07),transparent 60%);
+    text-align:center;overflow:hidden;
+  }
+  .cta-final h2{font-family:"Anton",sans-serif;font-size:clamp(72px,12vw,200px);line-height:.85;text-transform:uppercase;letter-spacing:-.01em}
+  .cta-final h2 .g{color:var(--green)}
+  .cta-final h2 .s{-webkit-text-stroke:1.5px var(--ink);color:transparent}
+  .cta-final .sub{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.22em;color:var(--ink-dim);text-transform:uppercase;margin:32px 0 44px}
+  .cta-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .btn{
+    padding:18px 32px;font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;
+    cursor:pointer;border:1px solid var(--ink);background:var(--ink);color:#000;text-decoration:none;display:inline-flex;align-items:center;gap:12px;
+    transition:.2s;
+  }
+  .btn:hover{background:var(--green);border-color:var(--green)}
+  .btn.ghost{background:transparent;color:var(--ink)}
+  .btn.ghost:hover{background:var(--ink);color:#000}
+  .btn .arrow{display:inline-block;transition:.2s}
+  .btn:hover .arrow{transform:translateX(4px)}
+
+  /* ===== FOOTER ===== */
+  footer{padding:64px 28px 40px;background:#000}
+  .foot-wrap{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:48px;align-items:start}
+  .foot-brand{display:flex;flex-direction:column;gap:16px}
+  .foot-brand .ft{font-family:"Anton",sans-serif;font-size:38px;line-height:.9;text-transform:uppercase}
+  .foot-brand .ft .g{color:var(--green)}
+  .foot-brand .fs{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;color:var(--ink-dim);text-transform:uppercase}
+  footer h5{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;color:var(--green);text-transform:uppercase;margin-bottom:16px}
+  footer ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+  footer ul li{font-size:14px;color:var(--ink);font-family:"Space Grotesk",sans-serif}
+  .partner-bar{
+    margin-top:56px;padding-top:32px;border-top:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap;
+  }
+  .partner-bar .label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;color:var(--ink-dim);text-transform:uppercase}
+  .partner-logos{display:flex;align-items:center;gap:36px;flex-wrap:wrap}
+  .partner-logos .logo{display:flex;align-items:center;gap:14px}
+  .partner-logos .logo img{display:block}
+  .logo-hakiaton img{height:42px;filter:invert(1) brightness(1.4)}
+  .logo-hak img{height:30px;filter:invert(1)}
+  .logo-ba{background:#fff;padding:10px 14px;border-radius:6px}
+  .logo-ba img{height:38px}
+  .colofon{
+    margin-top:36px;padding-top:24px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;color:var(--ink-dim);text-transform:uppercase;
+  }
+
+  /* ===== TICKER STRIP (vertical edge) ===== */
+  .edge-strip{
+    position:fixed;left:0;top:0;bottom:0;width:28px;z-index:50;
+    border-right:1px solid var(--line);display:flex;flex-direction:column;justify-content:space-between;align-items:center;
+    padding:90px 0 24px;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;color:var(--ink-dim);text-transform:uppercase;
+    background:rgba(10,10,10,.6);backdrop-filter:blur(4px);
+  }
+  .edge-strip .v{writing-mode:vertical-rl;transform:rotate(180deg)}
+  .edge-strip .v.g{color:var(--green)}
+  body{padding-left:28px}
+  nav.top{left:28px}
+
+  /* ===== responsive ===== */
+  @media (max-width:1100px){
+    .hero-meta{grid-template-columns:repeat(2,1fr)}
+    .que-grid,.obj-wrap,.programa,.dia,.ventana{grid-template-columns:1fr}
+    .futuro,.aud-grid{grid-template-columns:repeat(2,1fr)}
+    .bench,.plat{grid-template-columns:repeat(2,1fr)}
+    .plat .p{border-bottom:1px solid var(--line)}
+    .tools-grid{grid-template-columns:1fr}
+    .foot-wrap{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:680px){
+    body{padding-left:0}
+    nav.top{left:0;padding:12px 16px}
+    nav.top .links{display:none}
+    .edge-strip{display:none}
+    section.block{padding:64px 18px}
+    .hero{padding:120px 18px 40px}
+    .hero-top{left:18px;right:18px}
+    .hero-bottom-bar{left:18px;right:18px}
+    .hero-meta{grid-template-columns:1fr 1fr;gap:16px}
+    .futuro,.aud-grid,.bench,.plat{grid-template-columns:1fr}
+    .section-head{flex-direction:column;align-items:flex-start;gap:14px}
+    .ventana{padding:36px 24px}
+    .ventana h3{font-size:42px !important}
+    .obj-list .item{grid-template-columns:64px 1fr}
+    .obj-list .item .n{font-size:54px}
+    .dia-list .it{grid-template-columns:54px 1fr}
+    .dia-list .it .n{font-size:38px}
+    .foot-wrap{grid-template-columns:1fr}
+    .partner-logos{gap:20px}
+  }
+
+  /* ===== PRINT ===== */
+  @media print{
+    @page{ size:A4 portrait; margin:0 }
+    *,*::before,*::after{
+      -webkit-print-color-adjust:exact !important;
+      print-color-adjust:exact !important;
+      color-adjust:exact !important;
+      animation:none !important;
+      transition:none !important;
+    }
+    html,body{background:#0a0a0a;overflow:visible;padding-left:0 !important}
+    body::before,body::after{display:none !important}
+    nav.top, .edge-strip, #tweaks-root, .twk-root, .twk-shell, .twk-panel,
+    .hero-bottom-bar .rec, nav.top .dot, .marquee-track,
+    [class*="twk-"]{display:none !important}
+    .marquee{padding:10px 0;background:#000}
+    .marquee-track{display:block;animation:none !important;font-size:22px;text-align:center;color:#9FFF6B;letter-spacing:.3em}
+    .marquee-track .star, .marquee-track span:not(:first-child){display:none}
+    .marquee-track::before{content:"FESTIVAL · CINE · IA · BUENOS AIRES · 2027 · HAK TEAM"}
+    .marquee-track > *{display:none}
+
+    /* Each section ~one page */
+    section.block, .hero, .cta-final, footer{
+      break-inside:avoid;
+      break-after:page;
+      page-break-after:always;
+      padding:36px 28px !important;
+      min-height:auto;
+    }
+    .hero{
+      padding:40px 28px !important;
+      min-height:100vh;
+      display:flex;flex-direction:column;justify-content:flex-end;
+    }
+    .hero-img{position:absolute;inset:0;animation:none !important;transform:none !important}
+    .hero-title{font-size:96px !important}
+    .hero-meta .v{font-size:24px !important}
+    .hero-meta .v.small{font-size:18px !important}
+    .hero-top{top:30px !important}
+
+    /* Big headings shrink */
+    .section-head h2{font-size:64px !important;line-height:.88 !important}
+    .futuro-q{font-size:42px !important;margin:36px 0 20px !important}
+    .ventana h3{font-size:48px !important}
+    .cta-final h2{font-size:84px !important}
+    .ventana .r .stats .stat .v{font-size:34px !important}
+    .obj-list .item .n{font-size:60px !important}
+    .dia-list .it .n{font-size:42px !important}
+    .bench-head{margin-top:48px !important}
+
+    /* Avoid splitting cards across pages */
+    .futuro .card,.bench .b,.plat .p,.aud-grid .a,.tools-grid .tool,
+    .obj-list .item,.dia-list .it,.ventana,.section-head{break-inside:avoid;page-break-inside:avoid}
+
+    /* Image frames */
+    .obj-image,.dia-img{max-height:520px}
+    .obj-image img,.dia-img img{animation:none !important;transform:none !important}
+
+    footer{padding:36px 28px !important;break-after:auto}
+    .colofon{flex-wrap:wrap;gap:8px}
+  }
+</style>
+</head>
+<body style="background-color: rgb(0, 0, 0)">
+
+<aside class="edge-strip">
+  <div class="v">HAK · TEAM · 2027</div>
+  <div class="v g">FESTIVAL · CINE · IA</div>
+</aside>
+
+<nav class="top">
+  <div class="left">
+    <span class="dot"></span>
+    <span class="mono" style="font-size:11px;letter-spacing:.2em;text-transform:uppercase">Festival_Cine_IA · BA · 2027</span>
+  </div>
+  <div class="links">
+    <a href="#que-es">01 · Qué es</a>
+    <a href="#objetivos">02 · Objetivos</a>
+    <a href="#programa">03 · Programa</a>
+    <a href="#festival">04 · Festival</a>
+  </div>
+  <button class="cta"> ↗</button>
+</nav>
+
+<!-- ===== HERO ===== -->
+<header class="hero">
+  <div class="hero-img"></div>
+  <div class="hero-frame-marks"></div>
+  <span class="corner tr"></span>
+  <span class="corner bl"></span>
+
+  <div class="hero-top">
+    <div class="col">
+      <span class="muted">REC · 24.000 fps</span>
+      <span>SCN 001 / TK 27</span>
+    </div>
+    <div class="col" style="text-align:center">
+      <span class="muted">LAT -34.6037° / LON -58.3816°</span>
+      <span>BUENOS AIRES · AR</span>
+    </div>
+    <div class="col r">
+      <span class="muted">EDITION 001</span>
+      <span>2027</span>
+    </div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-presents">
+      <span class="line"></span>
+      <span>HAK TEAM presenta</span>
+      <span class="line"></span>
+    </div>
+
+    <h1 class="hero-title">
+      <div class="row"><span>Festival</span></div>
+      <div class="row"><span>de Cine</span><span class="ia">IA</span></div>
+      <div class="row"><span class="out">Buenos</span><span>Aires</span></div>
+      <div class="row"><span style="color:var(--green)">2027</span></div>
+    </h1>
+
+    <div class="hero-meta">
+      <div class="m">
+        <span class="k">Categoría</span>
+        <span class="v">Cine · IA</span>
+      </div>
+      <div class="m">
+        <span class="k">DURACIÓN</span>
+        <span class="v">7 días</span>
+      </div>
+      <div class="m">
+        <span class="k">Mercado</span>
+        <span class="v small">AUDIOVISUAL</span>
+      </div>
+      <div class="m">
+        <span class="k">Alcance</span>
+        <span class="v small">Global · LATAM</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-bottom-bar">
+    <span class="rec">REC · TAKE 01</span>
+    <span>IA · CINE · INDUSTRIA AUDIOVISUAL</span>
+    <span>SCROLL ↓</span>
+  </div>
+</header>
+
+<!-- ===== MARQUEE ===== -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Inteligencia generativa</span><span class="star">✦</span>
+    <span class="alt">Cine nativo IA</span><span class="star">✦</span>
+    <span>Pitch · Mercado · Premios</span><span class="star">✦</span>
+    <span class="alt">Convocatoria global</span><span class="star">✦</span>
+    <span>Ventana Sur</span><span class="star">✦</span>
+    <span class="alt">Buenos Aires 2027</span><span class="star">✦</span>
+    <span>Inteligencia generativa</span><span class="star">✦</span>
+    <span class="alt">Cine nativo IA</span><span class="star">✦</span>
+    <span>Pitch · Mercado · Premios</span><span class="star">✦</span>
+    <span class="alt">Convocatoria global</span><span class="star">✦</span>
+    <span>Ventana Sur</span><span class="star">✦</span>
+    <span class="alt">Buenos Aires 2027</span><span class="star">✦</span>
+  </div>
+</div>
+
+<!-- ===== QUE ES ===== -->
+<section class="block" id="que-es">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="id">[ 01 / Capítulo ] ¿Qué es?</span>
+      <h2>Festival de <span class="stroke">Cine</span> <em>IA</em></h2>
+    </div>
+
+    <div class="que-grid">
+      <p class="que-lede" style="font-family: &quot;Work Sans&quot;">Una plataforma que integra IA en la industria cinematográfica y audiovisual. Capacitaciones, pitches, feria de negocios y proyecciones en un único evento de alto impacto — con conexión directa a Ventana Sur, el mercado audiovisual más importante de Latinoamérica.</p>
+      <div class="que-side">
+        <div class="row"><span class="k">Formato</span><span class="v">Festival híbrido + mercado profesional</span></div>
+        <div class="row"><span class="k">Sede</span><span class="v">Buenos Aires, Argentina</span></div>
+        <div class="row"><span class="k">Producción</span><span class="v">HAK Team · Hakiaton</span></div>
+        <div class="row"><span class="k">Soporte</span><span class="v">Buenos Aires Ciudad</span></div>
+        <div class="row"><span class="k">Edición</span><span class="v">001 —  2027</span></div>
+      </div>
+    </div>
+
+    <h3 class="futuro-q">¿Cuál es el futuro de la <span class="stroke">industria</span> audiovisual?</h3>
+
+    <div class="futuro">
+      <article class="card">
+        <span class="num">/01 · MOTORES</span>
+        <h4 class="t">IA Generativa</h4>
+        <p class="d">Las herramientas como Runway, Midjourney y ElevenLabs están redefiniendo la producción audiovisual desde el guion hasta la postproducción.</p>
+        <div class="tools">
+          <span>Runway</span><span>Midjourney</span><span>ElevenLabs</span>
+        </div>
+      </article>
+      <article class="card">
+        <span class="num">/02 · ACCESO</span>
+        <h4 class="t">Democratización creativa</h4>
+        <p class="d">El costo de producir contenido de alta calidad se reduce drásticamente, abriendo la industria a nuevos creadores y regiones del mundo.</p>
+        <div class="tools">
+          <span>Bajo costo</span><span>Producción ágil</span><span>Nuevas voces</span>
+        </div>
+      </article>
+      <article class="card">
+        <span class="num">/03 · MERCADO</span>
+        <h4 class="t">Nuevos modelos de negocio</h4>
+        <p class="d">Plataformas globales como Netflix, Prime Video y Warner demandan contenido en escala. La IA es la herramienta para producir más, mejor y más rápido.</p>
+        <div class="tools">
+          <span>Netflix</span><span>Prime Video</span><span>Warner</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===== OBJETIVOS ===== -->
+<section class="block" id="objetivos">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="id">[ 02 / Capítulo ] Objetivos</span>
+      <h2>Cuatro <em>misiones</em>, una industria.</h2>
+    </div>
+
+    <div class="obj-wrap">
+      <figure class="obj-image">
+        <span class="scale">FRAME · 1.85:1</span>
+        <img src="../assets/obelisco-jenga.png" alt="Obelisco como torre de bloques sobre Buenos Aires" />
+        <figcaption class="cap"><span>Plano 14B</span><span>BSAS · 09:42</span></figcaption>
+      </figure>
+
+      <ol class="obj-list">
+        <li class="item">
+          <span class="n">01</span>
+          <span class="txt">Crear un <strong>entorno educativo en IA generativa</strong> para profesionales del cine y la comunicación.</span>
+        </li>
+        <li class="item">
+          <span class="n">02</span>
+          <span class="txt"><strong>Democratizar el acceso</strong> a herramientas de IA en la industria audiovisual argentina.</span>
+        </li>
+        <li class="item">
+          <span class="n">03</span>
+          <span class="txt">Brindar un espacio de <strong>distribución y pitch</strong> de proyectos cinematográficos con IA.</span>
+        </li>
+        <li class="item">
+          <span class="n">04</span>
+          <span class="txt">Fomentar producciones regionales y conectarlas con el <strong>mercado global</strong> a través de Ventana Sur.</span>
+        </li>
+      </ol>
+    </div>
+
+    <!-- VENTANA SUR -->
+    <div class="ventana">
+      <div class="l">
+        <div class="tag">/ Conexión directa</div>
+        <h3>Ventana<br/>Sur.</h3>
+      </div>
+      <div class="r">
+        <p>El mercado audiovisual más importante de Latinoamérica. El Festival de Cine IA Buenos Aires se posiciona como <strong>puerta de entrada</strong> a este ecosistema para productoras impulsadas por inteligencia artificial.</p>
+        <div class="stats">
+          <div class="stat"><div class="v">+3.000</div><div class="k">Compradores y vendedores</div></div>
+          <div class="stat"><div class="v">3</div><div class="k">Plataformas globales · Netflix · Warner · Prime</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BENCHMARKS -->
+    <div class="bench-head">
+      <span class="t">ECOSISTEMA IA GLOBAL EMERGENTE</span>
+      <span class="s">El festival se inscribe en un circuito en plena formación. Pares mundiales:</span>
+    </div>
+    <div class="bench">
+      <article class="b">
+        <span class="loc">USA · GLOBAL</span>
+        <span class="yr">/ Desde 2022</span>
+        <h4 class="name"><em>AI Film</em><br/>Festival</h4>
+        <p class="d">Festival pionero de cine nativo en IA producido por Runway, referente global en narrativa generativa.</p>
+      </article>
+      <article class="b">
+        <span class="loc">FRANCIA</span>
+        <span class="yr">/ Categoría AI Craft</span>
+        <h4 class="name">Cannes Film<br/><em>Festival</em></h4>
+        <p class="d">Incorporó la categoría AI Craft, consolidando la inteligencia artificial como disciplina legítima del cine.</p>
+      </article>
+      <article class="b">
+        <span class="loc">EMIRATOS</span>
+        <span class="yr">/ Desde 2024</span>
+        <h4 class="name">Dubai AI<br/>Film <em>Festival</em></h4>
+        <p class="d">Plataforma regional de innovación audiovisual orientada a la economía creativa del Medio Oriente.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROGRAMA ===== -->
+<section class="block" id="programa">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="id">[ 03 / Capítulo ] Programa de entrenamiento</span>
+      <h2>TECNOLOGÍA HERRAMIENTAS<br/>UN SOLO OFICIO.</h2>
+    </div>
+
+    <div class="programa">
+      <aside class="l">
+        <span class="uplabel">/ Currícula intensiva</span>
+        <p>Capacitaciones intensivas en herramientas de IA generativa para la producción audiovisual. Workshops dirigidos por referentes de la industria, divididos en módulos prácticos con entregables reales que se incorporan al ciclo de selección del festival.</p>
+      </aside>
+
+      <div class="tools-grid">
+        <div class="tool">
+          <span class="idx">T·01</span>
+          <span class="bar"></span>
+          <span class="n">CHATGPT/CLAUDE</span>
+          <span class="d">Guion y desarrollo de contenido. Estructura narrativa, diálogos, biblias de personaje.</span>
+        </div>
+        <div class="tool">
+          <span class="idx">T·02</span>
+          <span class="bar"></span>
+          <span class="n">NANO BANANA</span>
+          <span class="d">Concept art y storyboarding. Dirección de arte, paletas, look development.</span>
+        </div>
+        <div class="tool">
+          <span class="idx">T·03</span>
+          <span class="bar"></span>
+          <span class="n">VEO/SEEDANCE</span>
+          <span class="d">Generación y edición de video con IA. Animación, transferencia de estilo, VFX.</span>
+        </div>
+        <div class="tool">
+          <span class="idx">T·04</span>
+          <span class="bar"></span>
+          <span class="n">ElevenLabs</span>
+          <span class="d">Síntesis de voz y producción de audio. Doblaje, narración, foley sintético.</span>
+        </div>
+        <div class="tool">
+          <span class="idx">T·05</span>
+          <span class="bar"></span>
+          <span class="n">Suno + Firefly</span>
+          <span class="d">Música generativa y creatividad visual. Score original, gráfica, motion design.</span>
+        </div>
+        <div class="tool">
+          <span class="idx">T·06</span>
+          <span class="bar"></span>
+          <span class="n">Gemini + AI Studio</span>
+          <span class="d">Integración avanzada de flujos de trabajo IA y automatización end-to-end.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLATAFORMA DE INDUSTRIA -->
+    <div class="section-head" style="margin-top:120px">
+      <span class="id">[ 03 · b ] Plataforma de industria</span>
+      <h2><em>Pitch</em>, mercado<br/>y networking.</h2>
+    </div>
+
+    <div class="plat">
+      <article class="p">
+        <span class="pn">/ A · Convocatoria abierta</span>
+        <h4 class="pt">Obras producidas durante el ciclo</h4>
+        <p class="pd">Recepción de obras audiovisuales creadas con IA producidas durante el ciclo de capacitaciones.</p>
+      </article>
+      <article class="p">
+        <span class="pn">/ B · Feria de pitches</span>
+        <h4 class="pt">Inversores y ruedas de negocios</h4>
+        <p class="pd">Presentación de proyectos ante inversores nacionales e internacionales y ruedas de negocios.</p>
+      </article>
+      <article class="p">
+        <span class="pn">/ C · Conferencias</span>
+        <h4 class="pt">Referentes globales en escena</h4>
+        <p class="pd">Referentes globales de IA y audiovisual compartirán tendencias y experiencias de la industria.</p>
+      </article>
+      <article class="p">
+        <span class="pn">/ D · Networking estratégico</span>
+        <h4 class="pt">Productoras · Plataformas · Tech</h4>
+        <p class="pd">Conexión entre productoras, distribuidoras, plataformas y proveedores de tecnología.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===== AUDIENCIA ===== -->
+<section class="block">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="id">[ 03 · c ] Audiencia</span>
+      <h2>¿A <em>quién</em> miramos?</h2>
+    </div>
+    <div class="aud-grid">
+      <article class="a">
+        <span class="ak">/ Perfil 01</span>
+        <span class="at">Profesionales del audiovisual</span>
+        <span class="ad">Directores, productores, guionistas y técnicos del sector cinematográfico y publicitario.</span>
+      </article>
+      <article class="a">
+        <span class="ak">/ Perfil 02</span>
+        <span class="at">Estudiantes y graduados</span>
+        <span class="ad">Universitarios y recién egresados de carreras de cine, comunicación y artes visuales.</span>
+      </article>
+      <article class="a">
+        <span class="ak">/ Perfil 03</span>
+        <span class="at">Devs &amp; startups tech</span>
+        <span class="ad">Desarrolladores y startups de tecnología aplicada a la creatividad y la producción.</span>
+      </article>
+      <article class="a">
+        <span class="ak">/ Perfil 04</span>
+        <span class="at">Inversores y productoras</span>
+        <span class="ad">Inversores y productoras nacionales e internacionales en busca de IP audiovisual.</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DIA DEL FESTIVAL ===== -->
+<section class="block" id="festival">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="id">[ 04 / Capítulo ] El día del festival</span>
+      <h2>El <em>corazón</em><br/>del evento.</h2>
+    </div>
+
+    <p class="dia-lede">Un festival de <strong>una semana</strong> en Buenos Aires con convocatoria internacional de obras audiovisuales generadas con IA. Proyecciones públicas, premiación oficial y cierre institucional.</p>
+
+    <div class="dia">
+      <figure class="dia-img">
+        <span class="stamp">EXT · CIUDAD · 2027</span>
+        <img src="../assets/hero-head.png" alt="IA emergiendo sobre Buenos Aires" />
+        <figcaption class="timecode"><span>BSAS · NOV 2027</span><span>TC 19:32:07:14</span></figcaption>
+      </figure>
+
+      <ol class="dia-list">
+        <li class="it">
+          <span class="n">01</span>
+          <div>
+            <h4>Convocatoria global</h4>
+            <p>Obras audiovisuales creadas con IA de todo el mundo. Categorías: cortometrajes, largometrajes, formatos experimentales y nuevos creadores.</p>
+          </div>
+        </li>
+        <li class="it">
+          <span class="n">02</span>
+          <div>
+            <h4>Proyecciones y muestras</h4>
+            <p>Funciones públicas curadas que celebran la intersección entre inteligencia artificial y arte cinematográfico.</p>
+          </div>
+        </li>
+        <li class="it">
+          <span class="n">03</span>
+          <div>
+            <h4>Premios oficiales</h4>
+            <p>Reconocimiento económico a la creatividad, innovación y excelencia técnica. Incentivos para proyectos ganadores de pitches.</p>
+          </div>
+        </li>
+        <li class="it">
+          <span class="n">04</span>
+          <div>
+            <h4>Conexión internacional</h4>
+            <p>Proyección hacia Ventana Sur y otros mercados globales. Visibilidad para productoras y creadores de la región.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA FINAL ===== -->
+<section class="cta-final">
+  <div class="wrap">
+    <h2>
+      <span class="g">Acción.</span><br/>
+      <span class="s">Cámara.</span><br/>
+      <span>Inteligencia.</span>
+    </h2>
+    <p class="sub">2027 · BUENOS AIRES · ARGENTINA</p>
+    <div class="cta-actions">
+      <a class="btn" href="#">PRIMERA EDICIÓN
+→</a>
+      <a class="btn ghost" href="#">FESTIVAL CINE IA
+
+↓</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="foot-wrap">
+    <div class="foot-brand">
+      <div class="ft">Festival<br/>de Cine <span class="g">IA</span><br/>BA · 2027</div>
+      <div class="fs">
+</div>
+    </div>
+    <div>
+      <h5>Festival</h5>
+      <ul>
+        <li>Qué es</li>
+        <li>Objetivos</li>
+        <li>Programa</li>
+        <li>Convocatoria</li>
+      </ul>
+    </div>
+    <div>
+      <h5>Industria</h5>
+      <ul>
+        <li>
+</li>
+        <li>Pitch &amp; mercado</li>
+        <li>Conferencias</li>
+        <li>Networking</li>
+      </ul>
+    </div>
+    <div>
+      <h5>Contacto</h5>
+      <ul>
+        <li>team@hak.ar</li>
+        <li>
+</li>
+        <li>
+</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="partner-bar">
+    <span class="label">/ Producido y respaldado por</span>
+    <div class="partner-logos">
+      <div class="logo logo-hakiaton"><img src="../assets/logo-hakiaton.png" alt="Hakiaton" style="object-fit: cover; opacity: 1" /></div>
+      <div class="logo logo-hak"><img src="../assets/logo-hak.png" alt="Hak" /></div>
+      <div class="logo logo-ba"><img src="../assets/logo-ba.png" alt="Buenos Aires Ciudad" /></div>
+    </div>
+  </div>
+
+  <div class="colofon">
+    <span>© HAK TEAM · 2026 — 2027</span>
+    <span>Festival de Cine IA · Buenos Aires · Edición 001</span>
+    <span>
+</span>
+  </div>
+</footer>
+
+<script>
+  // ===== TWEAKS DEFAULTS =====
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "motion": "drift",
+    "parallax": 7,
+    "kenburns": true
+  }/*EDITMODE-END*/;
+  window.__festivalTweaks = { ...TWEAK_DEFAULTS };
+
+  function applyTweaks(t){
+    document.body.setAttribute('data-motion', t.motion);
+    document.body.setAttribute('data-kenburns', t.kenburns ? 'on' : 'off');
+    window.__festivalTweaks = { ...t };
+  }
+  applyTweaks(TWEAK_DEFAULTS);
+
+  // Parallax on hero — reads live intensity from tweaks
+  const heroImg = document.querySelector('.hero-img');
+  let baseScale = 1;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    const t = window.__festivalTweaks || TWEAK_DEFAULTS;
+    if (y < window.innerHeight && heroImg && t.motion !== 'still') {
+      // Intensity 0–100 maps to translate multiplier 0–0.5
+      const mult = (t.parallax || 0) / 100 * 0.5;
+      const jitter = t.motion === 'glitch' ? (Math.random() - 0.5) * 6 : 0;
+      // Don't fight ken-burns animation — only translate if ken-burns is off
+      if (!t.kenburns) {
+        heroImg.style.transform = 'translate(' + jitter + 'px,' + (y * mult) + 'px) scale(' + (1 + y * 0.0002) + ')';
+      } else {
+        // Apply parallax via a wrapping CSS var so the animation keeps running
+        heroImg.style.setProperty('--scroll-y', (y * mult) + 'px');
+      }
+    }
+  }, { passive: true });
+
+  // Smooth scroll for nav links
+  document.querySelectorAll('nav.top a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href');
+      const el = document.querySelector(id);
+      if (el) { e.preventDefault(); window.scrollTo({ top: el.offsetTop - 70, behavior: 'smooth' }); }
+    });
+  });
+
+  // Timecode in hero updates live
+  const tc = document.querySelector('.hero-bottom-bar .rec');
+  let tk = 1;
+  setInterval(() => {
+    tk = (tk % 99) + 1;
+    if (tc) tc.innerHTML = 'REC · TAKE ' + String(tk).padStart(2, '0');
+  }, 1400);
+
+  // Expose updater for the tweaks panel
+  window.__applyFestivalTweaks = applyTweaks;
+</script>
+
+<!-- ===== TWEAKS PANEL (React, lazy) ===== -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="../tweaks-panel.jsx"></script>
+<div id="tweaks-root"></div>
+<script type="text/babel">
+  const { TweaksPanel, TweakSection, TweakRadio, TweakSlider, TweakToggle, useTweaks } = window;
+
+  function FestivalTweaks(){
+    const [t, setTweak] = useTweaks(window.__festivalTweaks);
+    React.useEffect(() => {
+      window.__applyFestivalTweaks(t);
+    }, [t]);
+
+    return (
+      <TweaksPanel title="Movimiento">
+        <TweakSection label="Modo cinemático">
+          <TweakRadio
+            label="Preset"
+            value={t.motion}
+            onChange={(v) => setTweak('motion', v)}
+            options={[
+              { value: 'still', label: 'Still' },
+              { value: 'drift', label: 'Drift' },
+              { value: 'glitch', label: 'Glitch' },
+            ]}
+          />
+        </TweakSection>
+        <TweakSection label="Parallax">
+          <TweakSlider
+            label="Intensidad"
+            value={t.parallax}
+            min={0} max={100} step={1}
+            unit="%"
+            onChange={(v) => setTweak('parallax', v)}
+          />
+        </TweakSection>
+        <TweakSection label="Ken Burns">
+          <TweakToggle
+            label="Drift continuo"
+            value={t.kenburns}
+            onChange={(v) => setTweak('kenburns', v)}
+          />
+        </TweakSection>
+      </TweaksPanel>
+    );
+  }
+
+  const root = ReactDOM.createRoot(document.getElementById('tweaks-root'));
+  root.render(<FestivalTweaks />);
+
+  // Auto-print: wait for fonts + images then print
+  (async () => {
+    try { await document.fonts.ready; } catch(_){}
+    const imgs = Array.from(document.images);
+    await Promise.all(imgs.map(img => img.complete
+      ? Promise.resolve()
+      : new Promise(res => { img.onload = img.onerror = res; })));
+    await new Promise(r => setTimeout(r, 600));
+    window.print();
+  })();
+</script>
+
+</body>
+</html>
